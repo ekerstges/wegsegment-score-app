@@ -20,8 +20,8 @@ import {
   query,
   runTransaction,
   serverTimestamp,
-  Timestamp,
 } from "firebase/firestore";
+import type { Timestamp } from "firebase/firestore";
 
 /**
  * =====================================================================================
@@ -103,16 +103,15 @@ import {
 // In productie zet je dit idealiter in environment variables.
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
 };
 
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
 
 // Firebase initialiseren.
 const firebaseApp = initializeApp(firebaseConfig);
@@ -476,29 +475,53 @@ function TopBar({
   user: User | null;
   segmentCount: number;
 }) {
+  const [collapsed, setCollapsed] = useState(true);
+
   return (
-    <div className="absolute left-4 top-4 z-10 max-w-xl rounded-2xl bg-white/95 p-4 shadow-2xl backdrop-blur">
-      <div className="text-2xl font-bold">Wegsegment Score</div>
-      <div className="mt-2 text-sm leading-6 text-slate-600">
-        Klik op <strong>Tekenmodus</strong>, teken een wegsegment, en geef daarna
-        een score van 1 t/m 5. Bestaande segmenten kleuren automatisch mee op
-        basis van de gemiddelde beoordeling van alle gebruikers.
-      </div>
-      <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-2xl bg-slate-50 p-3">
-          <div className="text-slate-500">Gebruiker</div>
-          <div className="font-medium">{user ? user.uid.slice(0, 12) : "Verbinden..."}</div>
+    <div className="absolute left-3 top-3 z-10 w-[calc(100%-6rem)] max-w-xl md:left-4 md:top-4 md:w-auto">
+      <div className="rounded-2xl bg-white/95 shadow-2xl backdrop-blur">
+        <div className="flex items-center justify-between gap-3 p-3 md:p-4">
+          <div>
+            <div className="text-base font-bold md:text-2xl">Wegsegment Score</div>
+            <div className="text-xs text-slate-500 md:text-sm">App-info</div>
+          </div>
+          <button
+            onClick={() => setCollapsed((value) => !value)}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 md:text-sm"
+          >
+            {collapsed ? "Open" : "Sluit"}
+          </button>
         </div>
-        <div className="rounded-2xl bg-slate-50 p-3">
-          <div className="text-slate-500">Segmenten</div>
-          <div className="font-medium">{segmentCount}</div>
-        </div>
+
+        {!collapsed && (
+          <div className="border-t border-slate-200 px-3 pb-3 pt-3 md:px-4 md:pb-4">
+            <div className="text-xs leading-5 text-slate-600 md:text-sm md:leading-6">
+              Klik op <strong>Tekenmodus</strong>, teken een wegsegment, en geef daarna
+              een score van 1 t/m 5. Bestaande segmenten kleuren automatisch mee op
+              basis van de gemiddelde beoordeling van alle gebruikers.
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-xs md:mt-4 md:gap-3 md:text-sm">
+              <div className="rounded-2xl bg-slate-50 p-3">
+                <div className="text-slate-500">Gebruiker</div>
+                <div className="font-medium">
+                  {user ? user.uid.slice(0, 12) : "Verbinden..."}
+                </div>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-3">
+                <div className="text-slate-500">Segmenten</div>
+                <div className="font-medium">{segmentCount}</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function ScoreLegend() {
+  const [collapsed, setCollapsed] = useState(true);
+
   const rows = [
     ["#16a34a", "4.5 - 5.0", "Zeer glad"],
     ["#65a30d", "3.5 - 4.4", "Goed"],
@@ -508,16 +531,34 @@ function ScoreLegend() {
   ] as const;
 
   return (
-    <div className="absolute bottom-4 left-4 z-10 w-72 rounded-2xl bg-white/95 p-4 shadow-2xl backdrop-blur">
-      <div className="mb-3 text-lg font-semibold">Legenda</div>
-      <div className="space-y-2 text-sm">
-        {rows.map(([color, range, label]) => (
-          <div key={color} className="flex items-center gap-3">
-            <div className="h-3 w-8 rounded-full" style={{ backgroundColor: color }} />
-            <div className="flex-1">{label}</div>
-            <div className="text-slate-500">{range}</div>
+    <div className="absolute bottom-3 left-3 z-10 w-44 md:bottom-4 md:left-4 md:w-72">
+      <div className="rounded-2xl bg-white/95 shadow-2xl backdrop-blur">
+        <div className="flex items-center justify-between gap-3 p-3 md:p-4">
+          <div className="text-sm font-semibold md:text-lg">Legenda</div>
+          <button
+            onClick={() => setCollapsed((value) => !value)}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 md:text-sm"
+          >
+            {collapsed ? "Open" : "Sluit"}
+          </button>
+        </div>
+
+        {!collapsed && (
+          <div className="border-t border-slate-200 px-3 pb-3 pt-3 md:px-4 md:pb-4">
+            <div className="space-y-2 text-xs md:text-sm">
+              {rows.map(([color, range, label]) => (
+                <div key={color} className="flex items-center gap-2 md:gap-3">
+                  <div
+                    className="h-3 w-6 rounded-full md:w-8"
+                    style={{ backgroundColor: color }}
+                  />
+                  <div className="flex-1">{label}</div>
+                  <div className="text-slate-500">{range}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
@@ -535,24 +576,24 @@ function DrawToolbar({
   locating: boolean;
 }) {
   return (
-    <div className="absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-2xl bg-white/95 p-2 shadow-2xl backdrop-blur">
+    <div className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-2xl bg-white/95 p-2 shadow-2xl backdrop-blur md:top-4">
       <div className="flex items-center gap-2">
         <button
           onClick={() => setDrawMode(!drawMode)}
-          className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
+          className={`rounded-xl px-3 py-2 text-xs font-medium transition md:px-4 md:text-sm ${
             drawMode
               ? "bg-blue-600 text-white"
               : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           }`}
         >
-          {drawMode ? "Tekenmodus actief" : "Tekenmodus"}
+          {drawMode ? "Teken actief" : "Tekenmodus"}
         </button>
 
         <button
           onClick={onLocateMe}
-          className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 md:px-4 md:text-sm"
         >
-          {locating ? "Locatie zoeken..." : "Mijn locatie"}
+          {locating ? "Zoeken..." : "Mijn locatie"}
         </button>
       </div>
     </div>
@@ -568,54 +609,78 @@ function RightPanel({
   myScore: number | null;
   onRate: (score: number) => void;
 }) {
+  const [collapsed, setCollapsed] = useState(true);
+
   return (
-    <div className="absolute right-4 top-4 z-10 w-80 rounded-2xl bg-white/95 p-4 shadow-2xl backdrop-blur">
-      <div className="text-lg font-semibold">Segmentdetails</div>
-
-      {!selectedSegment ? (
-        <div className="mt-3 text-sm leading-6 text-slate-600">
-          Klik op een gekleurd wegsegment om details te zien en je eigen score
-          toe te voegen of te wijzigen.
+    <div className="absolute right-3 top-3 z-10 w-44 md:right-4 md:top-4 md:w-80">
+      <div className="rounded-2xl bg-white/95 shadow-2xl backdrop-blur">
+        <div className="flex items-center justify-between gap-3 p-3 md:p-4">
+          <div className="text-sm font-semibold md:text-lg">Segmentdetails</div>
+          <button
+            onClick={() => setCollapsed((value) => !value)}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 md:text-sm"
+          >
+            {collapsed ? "Open" : "Sluit"}
+          </button>
         </div>
-      ) : (
-        <>
-          <div className="mt-3 rounded-2xl bg-slate-50 p-3">
-            <div className="text-sm text-slate-500">Gemiddelde score</div>
-            <div className="mt-1 text-3xl font-bold">{formatScore(selectedSegment.avgScore)} / 5</div>
-            <div className="mt-1 text-sm text-slate-600">{scoreLabel(selectedSegment.avgScore)}</div>
-          </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-slate-50 p-3">
-              <div className="text-sm text-slate-500">Beoordelingen</div>
-              <div className="text-xl font-semibold">{selectedSegment.ratingCount}</div>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-3">
-              <div className="text-sm text-slate-500">Jouw score</div>
-              <div className="text-xl font-semibold">{myScore ?? "-"}</div>
-            </div>
-          </div>
+        {!collapsed && (
+          <div className="border-t border-slate-200 px-3 pb-3 pt-3 md:px-4 md:pb-4">
+            {!selectedSegment ? (
+              <div className="text-xs leading-5 text-slate-600 md:text-sm md:leading-6">
+                Klik op een gekleurd wegsegment om details te zien en je eigen score
+                toe te voegen of te wijzigen.
+              </div>
+            ) : (
+              <>
+                <div className="rounded-2xl bg-slate-50 p-3">
+                  <div className="text-xs text-slate-500 md:text-sm">Gemiddelde score</div>
+                  <div className="mt-1 text-2xl font-bold md:text-3xl">
+                    {formatScore(selectedSegment.avgScore)} / 5
+                  </div>
+                  <div className="mt-1 text-xs text-slate-600 md:text-sm">
+                    {scoreLabel(selectedSegment.avgScore)}
+                  </div>
+                </div>
 
-          <div className="mt-4">
-            <div className="mb-2 text-sm font-medium">Score geven of wijzigen</div>
-            <div className="grid grid-cols-5 gap-2">
-              {[1, 2, 3, 4, 5].map((score) => (
-                <button
-                  key={score}
-                  onClick={() => onRate(score)}
-                  className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
-                    myScore === score
-                      ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-slate-200 hover:border-slate-400 hover:bg-slate-50"
-                  }`}
-                >
-                  {score}
-                </button>
-              ))}
-            </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 md:gap-3">
+                  <div className="rounded-2xl bg-slate-50 p-3">
+                    <div className="text-xs text-slate-500 md:text-sm">Beoordelingen</div>
+                    <div className="text-lg font-semibold md:text-xl">
+                      {selectedSegment.ratingCount}
+                    </div>
+                  </div>
+                  <div className="rounded-2xl bg-slate-50 p-3">
+                    <div className="text-xs text-slate-500 md:text-sm">Jouw score</div>
+                    <div className="text-lg font-semibold md:text-xl">{myScore ?? "-"}</div>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <div className="mb-2 text-xs font-medium md:text-sm">
+                    Score geven of wijzigen
+                  </div>
+                  <div className="grid grid-cols-5 gap-2">
+                    {[1, 2, 3, 4, 5].map((score) => (
+                      <button
+                        key={score}
+                        onClick={() => onRate(score)}
+                        className={`rounded-xl border px-2 py-2 text-xs font-medium transition md:px-3 md:text-sm ${
+                          myScore === score
+                            ? "border-blue-600 bg-blue-600 text-white"
+                            : "border-slate-200 hover:border-slate-400 hover:bg-slate-50"
+                        }`}
+                      >
+                        {score}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 }
