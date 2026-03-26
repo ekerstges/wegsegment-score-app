@@ -1,3 +1,4 @@
+import { firebaseConfig, GOOGLE_MAPS_API_KEY, validateEnv } from "./config";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GoogleMap, LoadScript, Polyline } from "@react-google-maps/api";
 import { initializeApp } from "firebase/app";
@@ -99,19 +100,6 @@ import type { Timestamp } from "firebase/firestore";
 // =====================================================================================
 // 1. CONFIGURATIE
 // =====================================================================================
-// Vervang onderstaande placeholders met jouw eigen Firebase- en Google Maps-gegevens.
-// In productie zet je dit idealiter in environment variables.
-
-const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
-};
-
-const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
 
 // Firebase initialiseren.
 const firebaseApp = initializeApp(firebaseConfig);
@@ -690,7 +678,10 @@ function RightPanel({
 // =====================================================================================
 
 export default function RoadSegmentScoreApp() {
-  // Ingelogde gebruiker.
+  if (import.meta.env.DEV) {
+  validateEnv();
+  }
+    // Ingelogde gebruiker.
   const [user, setUser] = useState<User | null>(null);
 
   // Alle segmenten op de kaart.
