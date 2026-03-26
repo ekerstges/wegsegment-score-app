@@ -1,14 +1,4 @@
-<div style={{
-  position: "absolute",
-  top: 10,
-  left: 10,
-  background: "white",
-  padding: 10,
-  zIndex: 9999
-}}>
-  TEST UI
-</div>
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GoogleMap, LoadScript, Polyline } from "@react-google-maps/api";
 import { initializeApp } from "firebase/app";
 import {
@@ -30,10 +20,7 @@ import {
   query,
   runTransaction,
   serverTimestamp,
-  setDoc,
   Timestamp,
-  updateDoc,
-  where,
 } from "firebase/firestore";
 
 /**
@@ -242,20 +229,6 @@ const formatScore = (score: number) => Number(score || 0).toFixed(1);
 // =====================================================================================
 // 4. HULPFUNCTIES VOOR PATHS EN SEGMENTEN
 // =====================================================================================
-
-/**
- * Zet Google Maps `MVCArray`/Polyline punten om naar een simpel array-formaat
- * dat veilig in Firestore opgeslagen kan worden.
- */
-function polylineToSimplePath(polyline: google.maps.Polyline): LatLngPoint[] {
-  return polyline
-    .getPath()
-    .getArray()
-    .map((point) => ({
-      lat: point.lat(),
-      lng: point.lng(),
-    }));
-}
 
 /**
  * Kleine validatie: een segment moet minstens 2 punten bevatten.
