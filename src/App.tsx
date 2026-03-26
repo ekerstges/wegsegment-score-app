@@ -116,16 +116,16 @@ import {
 // In productie zet je dit idealiter in environment variables.
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCZnmejX-jWQKCdgQlH_cys1gp-cbFUUAw",
-  authDomain: "wegsegmentscore.firebaseapp.com",
-  projectId: "wegsegmentscore",
-  storageBucket: "wegsegmentscore.firebasestorage.app",
-  messagingSenderId: "308469508546",
-  appId: "1:308469508546:web:9935f7ca9bdc0d026a4e5b",
-  measurementId: "G-YS06WPFTYJ"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyDLztMCe-KYhcSOB9FiVXvbGNxQ5vGehSU";
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 // Firebase initialiseren.
 const firebaseApp = initializeApp(firebaseConfig);
